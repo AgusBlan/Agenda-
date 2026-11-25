@@ -1,28 +1,27 @@
 {
   "name": "Mi Agenda",
   "short_name": "Mi Agenda",
-  "description": "Mi agenda",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffeef5",
   "theme_color": "#ffc7dd",
   "icons": [
     {
-      "src": "icono.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icono.png",
+      "src": "icon-192.jpg",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "any"
     },
     {
-      "src": "icono.png",
+      "src": "icon-512.jpg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
       "purpose": "maskable"
     }
   ]
