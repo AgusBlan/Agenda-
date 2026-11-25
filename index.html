@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mi Agenda</title>
+<link rel="icon" href="icono.png">
+<link rel="apple-touch-icon" href="icono.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mi Agenda">
+<meta name="theme-color" content="#ffc7dd">
+<link rel="manifest" href='data:application/manifest+json,[STRIPPED]'>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial;background:#ffeef5;color:#5a3a4a;overflow-x:hidden}
+.fondo-deco{position:fixed;inset:0;pointer-events:none;z-index:0}
+.circulo{position:absolute;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;text-align:center;font-size:11px;color:#d96a96}
+.c1{width:110px;height:110px;background:radial-gradient(#ffc7dd 2px,transparent 3px);background-size:12px 12px;background-color:#fff;left:-10px;top:60px;transform:rotate(-8deg)}
+.c2{width:95px;height:95px;background:repeating-linear-gradient(45deg,#ffc7dd 0 4px,white 4px 10px);right:8px;top:220px;transform:rotate(10deg)}
+.c3{width:80px;height:80px;background:repeating-linear-gradient(90deg,#ffc7dd 0 4px,white 4px 9px);left:12px;top:520px}
+.c4{width:90px;height:90px;background:#fff;border:3px dashed #ffc7dd;right:10px;top:480px;transform:rotate(-6deg)}
+.c5{width:100px;height:100px;background:radial-gradient(#f8a9c4 2px,transparent 3px);background-size:14px 14px;background-color:#fff;left:50%;top:820px;transform:translateX(-50%)}
+.app{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:14px;padding-bottom:110px}
+.top{text-align:center}
+.top h1{margin:6px 0;font-size:28px;letter-spacing:1px}
+.sub{font-size:12px;opacity:.7}
+.weekly{background:#fff6f0;border-radius:18px;padding:14px;margin-top:12px;box-shadow:0 6px 20px rgba(0,0,0,.08);border:2px solid #ffdce8;position:relative}
+.weekly:before{content:"WEEKLY";position:absolute;top:-10px;left:14px;background:#f8a9c4;color:white;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:bold;transform:rotate(-2deg)}
+.gridSemana{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px}
+.dia{background:white;border:2px solid #ffe3ee;border-radius:12px;padding:6px;min-height:70px;font-size:11px;cursor:pointer}
+.dia.hoy{outline:3px solid #ff8fb8}
+.todo-big{background-image:linear-gradient(#ffdce8 1px,transparent 1px),linear-gradient(90deg,#ffdce8 1px,transparent 1px);background-size:24px 24px;background-color:#fff;border-radius:18px;padding:18px;margin-top:18px;box-shadow:0 8px 22px rgba(0,0,0,.1);border:3px solid #ffc7dd;transform:rotate(-1deg)}
+.todo-big h2{margin:0;font-size:30px;text-align:center;transform:rotate(-2deg)}
+.todo-big p{text-align:center;font-size:11px;opacity:.6;margin:2px 0 10px}
+.linea{display:flex;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid #ffdce8;font-size:14px}
+.check{width:22px;height:22px;border:2px solid #f8a9c4;border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:white;flex-shrink:0}
+.check.hecho{background:#f8a9c4;color:white}
+.notas-row{display:flex;gap:10px;margin-top:16px}
+.nota-card{flex:1;background:#f8a9c4;color:white;border-radius:14px;padding:12px;min-height:110px;box-shadow:0 6px 16px rgba(0,0,0,.1)}
+.nota-card:nth-child(2){background:#ffc7dd;transform:rotate(1deg)}
+.nota-card b{display:block;font-size:13px}
+.nota-card small{font-size:11px;opacity:.9}
+.what-to-do{background:white;border-radius:50%;width:110px;height:110px;margin:18px auto;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;box-shadow:0 6px 16px rgba(0,0,0,.1);border:3px solid #ffe3ee}
+.what-to-do b{font-size:13px}
+.what-to-do span{font-size:10px}
+.card{background:white;border-radius:16px;padding:14px;margin-top:12px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+input,select,textarea{width:100%;padding:10px;border-radius:12px;border:2px solid #ffc7dd;margin:6px 0;font-size:14px;background:white}
+button.btn{width:100%;padding:12px;border:none;border-radius:14px;font-weight:bold;cursor:pointer;background:#ff8fb8;color:white;margin-top:6px}
+button.small{width:auto;padding:8px 12px;font-size:12px}
+.pill{display:inline-block;padding:7px 11px;border-radius:20px;background:#ffe3ee;font-size:12px;font-weight:bold;margin:2px;cursor:pointer}
+.pill.active{background:#ff8fb8;color:white}
+.act{display:flex;justify-content:space-between;background:#fff6f0;padding:8px;border-radius:10px;margin:5px 0;font-size:13px;border-left:5px solid #ff8fb8}
+.lapices{display:flex;gap:8px;justify-content:center;margin-top:14px}
+.lapiz{width:16px;height:110px;border-radius:8px;position:relative}
+.lapiz:after{content:"";position:absolute;top:-10px;left:0;right:0;height:10px;background:#333;border-radius:50% 50% 0 0}
+.tabs{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;gap:4px;padding:8px;z-index:20;border-top:2px solid #ffc7dd;overflow-x:auto}
+.tabs button{flex:1;min-width:68px;border:none;background:#ffe3ee;padding:10px 5px;border-radius:14px;font-weight:bold;font-size:11px;cursor:pointer}
+.tabs button.active{background:#ff8fb8;color:white}
+.sticker-float{position:fixed;bottom:80px;right:10px;z-index:30;display:flex;flex-direction:column;gap:6px}
+.sticker-float button{border:none;padding:10px;border-radius:50%;font-size:18px;box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer}
+#stickerLayer{position:fixed;inset:0;pointer-events:none;z-index:25}
+.bar{height:12px;background:#eee;border-radius:10px;overflow:hidden}.bar>div{height:100%;background:#ff8fb8}
+canvas{width:100%;height:300px;background:white;border:2px dashed #ffc7dd;border-radius:14px;touch-action:none}
+</style>
+</head>
+<body>
+<div class="fondo-deco"><div class="circulo c1">TO DO<br>LIST</div><div class="circulo c2">GOOD<br>TIME</div><div class="circulo c3">IMPORTANT</div><div class="circulo c4">TO DO<br>LIST</div><div class="circulo c5">TO DO<br>LIST</div></div>
+<div id="stickerLayer"></div>
+<div class="sticker-float"><button style="background:#fff0a8" onclick="agregarSticker('⭐')">⭐</button><button style="background:#ffc7dd" onclick="agregarSticker('💖')">💖</button><button style="background:#ffe3ee" onclick="agregarSticker('🌸')">🌸</button><button style="background:#fff0a8;font-size:13px;font-weight:bold" onclick="agregarStickerNota()">📝</button></div>
+
+<div class="app">
+<div class="top"><h1>🌸 Mi Agenda</h1><p class="sub" id="fechaTop"></p><p class="sub" id="resumenTop"></p></div>
+
+<div id="view-cal" class="view">
+  <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:10px"><span class="pill active" onclick="setVista('dia',this)">DÍA + HS</span><span class="pill" onclick="setVista('semana',this)">SEMANA</span><span class="pill" onclick="setVista('mes',this)">MES</span><span class="pill" onclick="setVista('ano',this)">AÑO</span></div>
+  <div style="display:flex;gap:6px;margin-top:10px"><button class="btn small" style="background:#ffc7dd;color:#333" onclick="cambiarFecha(-1)">◀</button><input type="date" id="fechaSel" onchange="render()"><button class="btn small" style="background:#ffc7dd;color:#333" onclick="cambiarFecha(1)">▶</button></div>
+
+  <div class="weekly"><div class="gridSemana" id="semanaGrid"></div><p style="font-size:11px;text-align:center;opacity:.6;margin:6px 0 0">WEEKLY • tocá un día para ver sus horas</p></div>
+
+  <div class="todo-big"><h2>To do List</h2><p>MY WEEKLY PLAN • WHAT TO DO</p><div id="listaTodoBig"></div>
+    <div style="display:flex;gap:6px;margin-top:10px"><input id="actTitulo" placeholder="Escribí tu tarea..."><button class="btn small" onclick="agregarAct()">+</button></div>
+    <div style="display:flex;gap:6px"><input type="time" id="actHora1" value="14:00"><input type="time" id="actHora2" value="16:00"></div>
+    <select id="actRepetir"><option value="nunca">No se repite</option><option value="dia">Todos los días</option><option value="jueves">Todos los jueves</option><option value="lunes">Todos los lunes</option><option value="martes">Todos los martes</option><option value="miercoles">Todos los miércoles</option><option value="viernes">Todos los viernes</option><option value="sabado">Todos los sábados</option><option value="domingo">Todos los domingos</option><option value="semana">Todas las semanas ese día</option></select>
+    <label style="font-size:12px">Repetir hasta:</label><input type="date" id="actHasta">
+    <div id="calCont"></div>
+  </div>
+
+  <div class="notas-row">
+    <div class="nota-card"><b>NOTES</b><small id="notaPreview1">Tus notas rápidas acá...</small><br><br><textarea id="notaTexto" style="background:rgba(255,255,255,.6);border:none" placeholder="Escribí..."></textarea><button class="btn small" style="background:white;color:#d96a96" onclick="agregarNota()">Guardar</button></div>
+    <div class="nota-card"><b>NOTES</b><small>TO DO LIST</small><div id="listaNotas"></div></div>
+  </div>
+
+  <div class="what-to-do"><b>What to do</b><span>hoy • esta semana</span><span>⭐</span></div>
+  <div class="lapices"><div class="lapiz" style="background:#ffc7dd"></div><div class="lapiz" style="background:#fff0a8"></div><div class="lapiz" style="background:#f8a9c4"></div></div>
+</div>
+
+<div id="view-acts" class="view" style="display:none"><div class="card"><b>✅ Todas mis actividades</b><div id="listaActs"></div><div id="rendimiento"></div></div></div>
+
+<div id="view-bita" class="view" style="display:none"><div class="card"><b>💖 Bitácora</b><p style="font-size:12px">TITLE • DETAIL • MY RATING</p>Ánimo <input type="range" min="1" max="5" id="bAnimo" value="3"> Energía <input type="range" min="1" max="5" id="bEnergia" value="3"> Ansiedad <input type="range" min="1" max="5" id="bAns" value="3"> Foco <input type="range" min="1" max="5" id="bFoco" value="3"> Sueño <input type="number" id="bSueno" placeholder="7"><textarea id="bTexto" placeholder="Hoy me sentí..."></textarea><button class="btn" onclick="guardarBitacora()">Guardar bitácora</button><p>MY RATING: <span id="ratingStars">☆☆☆☆☆</span> <button class="btn small" onclick="ponerRating()">Poner rating</button></p><div id="bitacoraMes"></div></div></div>
+
+<div id="view-notas" class="view" style="display:none"><div class="card"><b>📝 Notas / Stick Notes</b><textarea id="notaTexto2" placeholder="Escribí..."></textarea><button class="btn" onclick="agregarNota2()">+ Guardar como Stick Note</button><div id="listaNotas2"></div></div></div>
+
+<div id="view-dibujo" class="view" style="display:none"><div class="card"><b>🎨 Dibujo</b><div style="display:flex;gap:6px"><input type="color" id="colorDibujo" value="#ff8fb8" style="width:50px"><button class="btn small" onclick="borrador()">Borrador</button><button class="btn small" onclick="limpiarCanvas()">Limpiar</button><button class="btn small" onclick="guardarDibujo()">Guardar</button></div><canvas id="canvas"></canvas><div id="listaDibujos"></div></div></div>
+
+<div id="view-ajustes" class="view" style="display:none"><div class="card"><b>🎀 Fondo</b><p style="font-size:12px">Subí tu foto de fondo:</p><input type="file" accept="image/*" onchange="subirFondo(event)"><button class="btn" style="background:#ddd;color:#333" onclick="quitarFondo()">Quitar foto</button><button class="btn" onclick="exportar()">📤 Exportar para psiquiatra / facu</button><p id="exportBox" style="font-size:12px;white-space:pre-wrap"></p></div></div>
+</div>
+
+<div class="tabs"><button class="active" onclick="show('cal',this)">📅 Calendario</button><button onclick="show('acts',this)">✅ Actividades</button><button onclick="show('bita',this)">💖 Bitácora</button><button onclick="show('notas',this)">🧷 Stick Notes</button><button onclick="show('dibujo',this)">🎨 Dibujo</button><button onclick="show('ajustes',this)">🎀 Fondo</button></div>
+
+<script>
+let acts=JSON.parse(localStorage.getItem('clef_acts')||'[]');let notas=JSON.parse(localStorage.getItem('clef_notas')||'[]');let bit=JSON.parse(localStorage.getItem('clef_bit')||'{}');let dibujos=JSON.parse(localStorage.getItem('clef_dib')||'[]');let stickers=JSON.parse(localStorage.getItem('clef_stickers')||'[]');let vista='dia';let fechaActual=new Date();fechaActual.setHours(0,0,0,0);let fondo=localStorage.getItem('clef_fondo');if(fondo)document.body.style.backgroundImage=`url(${fondo})`;
+function fmt(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function show(id,el){document.querySelectorAll('.view').forEach(v=>v.style.display='none');document.getElementById('view-'+id).style.display='block';document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));if(el)el.classList.add('active');render();if(id==='dibujo')initCanvas();}
+function setVista(v,el){vista=v;document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');render();}
+function cambiarFecha(n){fechaActual.setDate(fechaActual.getDate()+(vista==='mes'?n*30:vista==='ano'?n*365:vista==='semana'?n*7:n));render();}
+function subirFondo(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{localStorage.setItem('clef_fondo',r.result);document.body.style.backgroundImage=`url(${r.result})`};r.readAsDataURL(f);}
+function quitarFondo(){localStorage.removeItem('clef_fondo');document.body.style.backgroundImage='none';}
+function ponerRating(){let r=prompt('Rating 1 al 5');if(!r)return;document.getElementById('ratingStars').innerText='★'.repeat(+r)+'☆'.repeat(5-+r);}
+function agregarAct(){let t=document.getElementById('actTitulo').value.trim();if(!t)return;let a={id:Date.now(),titulo:t,fecha:fmt(fechaActual),h1:document.getElementById('actHora1').value,h2:document.getElementById('actHora2').value,repetir:document.getElementById('actRepetir').value,hasta:document.getElementById('actHasta').value,hecha:false};acts.push(a);localStorage.setItem('clef_acts',JSON.stringify(acts));document.getElementById('actTitulo').value='';render();}
+function actsParaFecha(fs){let d=new Date(fs+'T12:00:00');return acts.filter(a=>{if(a.fecha===fs)return true;if(a.hasta&&fs>a.hasta)return false;if(fs<a.fecha)return false;if(a.repetir==='dia')return true;if(a.repetir==='semana')return new Date(a.fecha+'T12:00:00').getDay()===d.getDay();let dias={lunes:1,martes:2,miercoles:3,jueves:4,viernes:5,sabado:6,domingo:0};if(dias[a.repetir]!==undefined)return d.getDay()===dias[a.repetir];return false;});}
+function toggleAct(id){let a=acts.find(x=>x.id===id);if(a)a.hecha=!a.hecha;localStorage.setItem('clef_acts',JSON.stringify(acts));render();}
+function borrarAct(id){acts=acts.filter(x=>x.id!==id);localStorage.setItem('clef_acts',JSON.stringify(acts));render();}
+function agregarNota(){let t=document.getElementById('notaTexto').value.trim();if(!t)return;notas.unshift({id:Date.now(),texto:t,fecha:fmt(new Date())});localStorage.setItem('clef_notas',JSON.stringify(notas));document.getElementById('notaTexto').value='';document.getElementById('notaPreview1').innerText=t;render();}
+function agregarNota2(){let t=document.getElementById('notaTexto2').value.trim();if(!t)return;notas.unshift({id:Date.now(),texto:t,fecha:fmt(new Date())});localStorage.setItem('clef_notas',JSON.stringify(notas));document.getElementById('notaTexto2').value='';render();}
+function guardarBitacora(){let k=fmt(fechaActual);bit[k]={animo:+document.getElementById('bAnimo').value,energia:+document.getElementById('bEnergia').value,ans:+document.getElementById('bAns').value,foco:+document.getElementById('bFoco').value,sueno:document.getElementById('bSueno').value,texto:document.getElementById('bTexto').value};localStorage.setItem('clef_bit',JSON.stringify(bit));render();alert('Bitácora guardada 💖');}
+function exportar(){let txt='MI MES\n';Object.keys(bit).forEach(k=>{txt+=k+' ánimo:'+bit[k].animo+' energía:'+bit[k].energia+' ansiedad:'+bit[k].ans+' foco:'+bit[k].foco+' sueño:'+bit[k].sueno+' - '+bit[k].texto+'\n'});txt+='\nACTIVIDADES:\n'+acts.map(a=>a.fecha+' '+a.h1+' '+a.titulo+' '+(a.hecha?'HECHA':'PENDIENTE')).join('\n');document.getElementById('exportBox').innerText=txt;}
+let ctx,dibujando=false,borr=false;
+function initCanvas(){let c=document.getElementById('canvas');if(!c||ctx)return;ctx=c.getContext('2d');c.width=c.offsetWidth;c.height=300;let pos=e=>{let r=c.getBoundingClientRect();let t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}};c.onmousedown=e=>{dibujando=true;ctx.beginPath();let p=pos(e);ctx.moveTo(p.x,p.y)};c.onmousemove=e=>{if(!dibujando)return;let p=pos(e);ctx.strokeStyle=borr?'white':document.getElementById('colorDibujo').value;ctx.lineWidth=borr?20:4;ctx.lineTo(p.x,p.y);ctx.stroke()};window.onmouseup=()=>dibujando=false;c.ontouchstart=e=>{e.preventDefault();dibujando=true;ctx.beginPath();let p=pos(e);ctx.moveTo(p.x,p.y)};c.ontouchmove=e=>{e.preventDefault();if(!dibujando)return;let p=pos(e);ctx.strokeStyle=borr?'white':document.getElementById('colorDibujo').value;ctx.lineWidth=borr?20:4;ctx.lineTo(p.x,p.y);ctx.stroke()};c.ontouchend=()=>dibujando=false;}
+function borrador(){borr=!borr;alert(borr?'Borrador':'Lápiz')} function limpiarCanvas(){ctx.clearRect(0,0,document.getElementById('canvas').width,300)} function guardarDibujo(){let url=document.getElementById('canvas').toDataURL();dibujos.unshift(url);localStorage.setItem('clef_dib',JSON.stringify(dibujos));render();}
+function agregarSticker(emoji){let s={id:Date.now(),tipo:'emoji',texto:emoji,x:50+Math.random()*200,y:100+Math.random()*300};stickers.push(s);localStorage.setItem('clef_stickers',JSON.stringify(stickers));renderStickers();}
+function agregarStickerNota(){let t=prompt('¿Qué dice tu stick note?');if(!t)return;let s={id:Date.now(),tipo:'nota',texto:t,x:60+Math.random()*150,y:120+Math.random()*300};stickers.push(s);localStorage.setItem('clef_stickers',JSON.stringify(stickers));renderStickers();}
+function renderStickers(){let layer=document.getElementById('stickerLayer');layer.innerHTML='';stickers.forEach(s=>{let d=document.createElement('div');d.style.cssText=`position:absolute;left:${s.x}px;top:${s.y}px;pointer-events:auto;cursor:move;touch-action:none;${s.tipo==='nota'?'background:#fff0a8;padding:10px;border-radius:8px;max-width:160px;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,.2);transform:rotate(-2deg);':'font-size:36px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.2));'}`;d.innerText=s.texto;d.ondblclick=()=>{if(confirm('¿Borrar sticker?')){stickers=stickers.filter(x=>x.id!==s.id);localStorage.setItem('clef_stickers',JSON.stringify(stickers));renderStickers();}};let sx,sy,ox,oy;let mover=e=>{let t=e.touches?e.touches[0]:e;s.x=ox+(t.clientX-sx);s.y=oy+(t.clientY-sy);d.style.left=s.x+'px';d.style.top=s.y+'px';};let soltar=()=>{localStorage.setItem('clef_stickers',JSON.stringify(stickers));document.removeEventListener('mousemove',mover);document.removeEventListener('mouseup',soltar);};d.onmousedown=e=>{sx=e.clientX;sy=e.clientY;ox=s.x;oy=s.y;document.addEventListener('mousemove',mover);document.addEventListener('mouseup',soltar);};d.ontouchstart=e=>{let t=e.touches[0];sx=t.clientX;sy=t.clientY;ox=s.x;oy=s.y;};d.ontouchmove=e=>{e.preventDefault();mover(e);};d.ontouchend=()=>{localStorage.setItem('clef_stickers',JSON.stringify(stickers));};layer.appendChild(d);});}
+function render(){document.getElementById('fechaSel').value=fmt(fechaActual);let dias=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];document.getElementById('fechaTop').innerText='Hoy es '+dias[fechaActual.getDay()]+' '+fechaActual.getDate()+'/'+(fechaActual.getMonth()+1);let hoyActs=actsParaFecha(fmt(fechaActual));let hechas=acts.filter(a=>a.hecha).length;document.getElementById('resumenTop').innerText='Tenés '+hoyActs.length+' actividades hoy • '+hechas+' hechas en total';
+let semana=document.getElementById('semanaGrid');let lunes=new Date(fechaActual);lunes.setDate(lunes.getDate()-((fechaActual.getDay()+6)%7));let h='';for(let i=0;i<7;i++){let d=new Date(lunes);d.setDate(lunes.getDate()+i);let ks=fmt(d);let la=actsParaFecha(ks);h+=`<div class="dia ${ks===fmt(new Date())?'hoy':''}" onclick="fechaActual=new Date('${ks}T12:00:00');render()"><b>${['LUN','MAR','MIE','JUE','VIE','SAB','DOM'][i]} ${d.getDate()}</b>${la.slice(0,2).map(a=>`<div>${a.titulo}</div>`).join('')}</div>`}semana.innerHTML=h;
+document.getElementById('listaTodoBig').innerHTML=acts.map(a=>`<div class="linea"><div class="check ${a.hecha?'hecho':''}" onclick="toggleAct(${a.id})">${a.hecha?'✓':''}</div><span style="${a.hecha?'text-decoration:line-through;opacity:.5':''}">${a.titulo} - ${a.fecha} ${a.h1}-${a.h2} ${a.repetir!=='nunca'?'🔁 '+a.repetir:''}</span><span onclick="borrarAct(${a.id})" style="cursor:pointer">✕</span></div>`).join('')||'<p style="text-align:center;opacity:.5">Sin tareas todavía, agregá una 💖</p>';
+let c=document.getElementById('calCont');if(vista==='dia'){c.innerHTML='<h3>'+dias[fechaActual.getDay()]+' '+fechaActual.getDate()+' - con horas</h3>'+Array.from({length:17},(_,i)=>i+7).map(hh=>{let hhS=String(hh).padStart(2,'0')+':00';let enDia=hoyActs.filter(a=>a.h1.slice(0,2)==String(hh).padStart(2,'0'));return `<div style="display:flex;gap:8px;padding:6px 0;border-bottom:1px dashed #ffdce8;font-size:13px"><b style="width:55px;color:#d96a96">${hhS}</b><span>${enDia.map(a=>a.titulo+' '+a.h1+'-'+a.h2).join(', ')||'libre'}</span></div>`}).join('');}else if(vista==='mes'){let diasMes=new Date(fechaActual.getFullYear(),fechaActual.getMonth()+1,0).getDate();c.innerHTML='<h3>Mes '+(fechaActual.getMonth()+1)+'</h3><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px">'+Array.from({length:diasMes},(_,i)=>i+1).map(d=>{let dt=new Date(fechaActual.getFullYear(),fechaActual.getMonth(),d);let ks=fmt(dt);return `<div class="dia" onclick="fechaActual=new Date('${ks}T12:00:00');render()"><b>${d}</b></div>`}).join('')+'</div>';}else if(vista==='ano'){c.innerHTML='<h3>Año '+fechaActual.getFullYear()+'</h3>'+Array.from({length:12},(_,m)=>`<div style="background:white;padding:8px;border-radius:10px;margin:4px">Mes ${m+1} - ${acts.filter(a=>new Date(a.fecha+'T12:00:00').getMonth()===m).length} actividades</div>`).join('');}else{c.innerHTML='';}
+document.getElementById('listaActs').innerHTML=acts.map(a=>`<div class="act"><span onclick="toggleAct(${a.id})">${a.hecha?'✅':'⬜'} ${a.titulo} - ${a.fecha} ${a.h1}-${a.h2}</span><span onclick="borrarAct(${a.id})">✕</span></div>`).join('')||'Sin actividades';let total=acts.length;let cumpli=total?Math.round(hechas/total*100):0;document.getElementById('rendimiento').innerHTML=`<b>Rendimiento:</b> ${cumpli}% (${hechas}/${total})<div class="bar"><div style="width:${cumpli}%"></div></div>`;let keys=Object.keys(bit);let prom=k=>keys.length?(keys.reduce((s,kk)=>s+bit[kk][k],0)/keys.length).toFixed(1):'-';document.getElementById('bitacoraMes').innerHTML=`<hr><b>Promedio del mes:</b> Ánimo ${prom('animo')} • Energía ${prom('energia')} • Ansiedad ${prom('ans')} • Foco ${prom('foco')}<br>${keys.map(k=>`<div style="font-size:12px"><b>${k}</b> 💖${bit[k].animo} ⚡${bit[k].energia} 😰${bit[k].ans} 🎯${bit[k].foco} - ${bit[k].texto}</div>`).join('')}`;document.getElementById('listaNotas').innerHTML=notas.slice(0,3).map(n=>`<div style="font-size:12px;margin-top:6px">${n.texto}</div>`).join('');document.getElementById('listaNotas2').innerHTML=notas.map(n=>`<div style="background:#fff0a8;padding:10px;border-radius:10px;margin:6px 0;transform:rotate(-1deg)">${n.texto}<br><small>${n.fecha}</small></div>`).join('');document.getElementById('listaDibujos').innerHTML=dibujos.map(u=>`<img src="${u}" style="width:100%;border-radius:12px;margin:6px 0">`).join('');renderStickers();}
+render();
+</script>
+</body>
+</html>
