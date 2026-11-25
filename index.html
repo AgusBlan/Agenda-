@@ -62,6 +62,52 @@ button.small{width:auto;padding:8px 12px;font-size:12px}
 #stickerLayer{position:fixed;inset:0;pointer-events:none;z-index:25}
 .bar{height:12px;background:#eee;border-radius:10px;overflow:hidden}.bar>div{height:100%;background:#ff8fb8}
 canvas{width:100%;height:300px;background:white;border:2px dashed #ffc7dd;border-radius:14px;touch-action:none}
+/* ===== VERSIÓN CELULAR / TABLET / ESCRITORIO - MISMO INDEX ===== */
+
+/* CELULAR - ya lo tenés así, 1 columna */
+.app{ max-width:900px; }
+
+/* TABLET - a partir de 768px, se ve como escritorio chiquito */
+@media (min-width: 768px){
+  .app{ max-width:1100px; padding:20px; display:grid; grid-template-columns: 1fr 1.2fr; gap:16px; align-items:start; }
+  .top{ grid-column: 1 / -1; }
+  .todo-big{ transform:rotate(0deg); margin-top:0; }
+  .notas-row{ grid-column: 1 / -1; }
+  .weekly{ margin-top:0; }
+  .tabs{ max-width:1100px; left:50%; transform:translateX(-50%); border-radius:20px 20px 0 0; }
+  .sticker-float{ bottom:90px; right:20px; }
+  .what-to-do{ display:none; } /* en tablet no hace falta el circulito, se ve todo */
+}
+
+/* ESCRITORIO / TABLET GRANDE - a partir de 1024px, completo */
+@media (min-width: 1024px){
+  .app{ max-width:1400px; grid-template-columns: 320px 1fr 320px; }
+  .top{ grid-column: 1 / -1; }
+  /* Columna izquierda: calendario + weekly */
+  #view-cal{ display:contents !important; }
+  .weekly{ grid-column: 1; grid-row: 2; }
+  /* Columna centro: To Do List grande */
+  .todo-big{ grid-column: 2; grid-row: 2 / span 2; min-height:600px; }
+  /* Columna derecha: NOTES + What to do + lápices */
+  .notas-row{ grid-column: 3; grid-row: 2; flex-direction:column; }
+  .what-to-do{ display:flex; grid-column: 3; }
+  .lapices{ grid-column: 3; }
+  /* Las otras vistas (bitácora, notas, dibujo) ocupan todo */
+  #view-acts, #view-bita, #view-notas, #view-dibujo, #view-ajustes{ grid-column: 1 / -1; }
+  .tabs{ max-width:1400px; }
+  /* En escritorio los stickers se ven más grandes */
+  #stickerLayer{ font-size:20px; }
+}
+
+/* CELULAR CHICO - menos de 480px, todo más compacto */
+@media (max-width: 480px){
+  .top h1{ font-size:22px; }
+  .todo-big h2{ font-size:24px; }
+  .gridSemana{ grid-template-columns: repeat(7, 1fr); gap:3px; }
+  .dia{ padding:3px; font-size:9px; min-height:55px; }
+  .notas-row{ flex-direction:column; }
+  .circulo{ opacity:.5; } /* los circulitos no tapan en celu chico */
+}
 </style>
 </head>
 <body>
